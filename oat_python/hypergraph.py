@@ -20,7 +20,7 @@ def unique_elements(L):
     """
     unique_elements = []
     for l in L:
-        if not l in unique_elements:
+        if l not in unique_elements:
             unique_elements.append(l)
     return unique_elements
 

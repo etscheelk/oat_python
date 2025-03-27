@@ -108,6 +108,28 @@ pub struct FactoredBoundaryMatrixVr{
                     >
 }
 
+#[pyclass]
+pub struct CustomMatrix
+{
+    mat: CsMatBase<OrderedFloat<f64>, usize, Vec<usize>, Vec<usize>, Vec<OrderedFloat<f64>>>,
+}
+
+#[pymethods]
+impl CustomMatrix {
+    /// Provide a python scipy sparse matrix, and return a `CustomMatix`, a rust version of the same object.
+    /// 
+    /// Intended for providing custom boundary matrices. 
+    #[new]
+    pub fn new(
+        py: Python<'_>,
+        matrix: &PyAny,
+    ) -> PyResult<CustomMatrix> 
+    {
+        let matrix = import_sparse_matrix(py, matrix)?;
+        return Ok(CustomMatrix{ mat: matrix });
+    }
+}
+
 #[pymethods]
 impl FactoredBoundaryMatrixVr{ 
 

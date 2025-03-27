@@ -94,6 +94,7 @@ pub mod import;
 // ------------
 
 
+use clique_filtered::CustomMatrix;
 use dowker::FactoredBoundaryMatrixDowker;
 use itertools::Itertools;
 use ordered_float::OrderedFloat;
@@ -171,5 +172,7 @@ fn oat_python(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<FactoredBoundaryMatrixVr>()?;
     m.add_class::<FactoredBoundaryMatrixDowker>()?;
     m.add_function(wrap_pyfunction!(unique_rows, m)?)?;
+
+    m.add_class::<CustomMatrix>()?;
     Ok(())
 }

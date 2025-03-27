@@ -16,10 +16,10 @@ pub fn import_sparse_matrix(py: Python, scipy_csr: &PyAny )
 {
     // Check if the object is an instance of csr_matrix
 
-    let shape: (usize,usize) = scipy_csr.getattr("shape").ok().unwrap().extract().ok().unwrap();
-    let indptr: Vec<usize> = scipy_csr.getattr("indptr").ok().unwrap().extract().ok().unwrap();
-    let indices: Vec<usize> = scipy_csr.getattr("indices").ok().unwrap().extract().ok().unwrap();
-    let data: Vec< f64 > = scipy_csr.getattr("data").ok().unwrap().extract().ok().unwrap();
+    let shape: (usize,usize) = scipy_csr.getattr("shape")?.extract()?;
+    let indptr: Vec<usize> = scipy_csr.getattr("indptr")?.extract()?;
+    let indices: Vec<usize> = scipy_csr.getattr("indices")?.extract()?;
+    let data: Vec< f64 > = scipy_csr.getattr("data")?.extract()?;
     let data = data.into_iter().map(|v| OrderedFloat(v)).collect_vec();
 
     return Ok( CsMatBase::new(
