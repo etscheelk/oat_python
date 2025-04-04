@@ -15,7 +15,7 @@ use oat_rust::algebra::vectors::entries::{KeyValSet, KeyValNew};
 use oat_rust::algebra::matrices::operations::multiply::vector_matrix_multiply_minor_descend_simplified;
 use oat_rust::algebra::matrices::{operations::umatch::row_major::Umatch, query::{ViewRowAscend, ViewColDescend, IndicesAndCoefficients}};
 use oat_rust::algebra::rings::operator_traits::{Semiring, Ring, DivisionRing};
-use oat_rust::algebra::rings::operator_structs::ring_native::{FieldRationalSize, DivisionRingNative};
+use oat_rust::algebra::rings::operator_structs::ring_native::{DivisionRingNative, FieldFloat64, FieldRationalSize};
 use oat_rust::utilities::iterators::general::{RequireStrictAscent, RequireStrictAscentWithPanic};
 use oat_rust::utilities::order::{JudgePartialOrder, ReverseOrder};
 use oat_rust::utilities::order::{OrderOperatorAuto, OrderOperatorByKey, OrderOperatorByKeyCutsom, IntoReverseOrder};
@@ -111,7 +111,7 @@ pub struct FactoredBoundaryMatrixVr{
 #[pyclass]
 pub struct CustomMatrix
 {
-    mat: CsMatBase<OrderedFloat<f64>, usize, Vec<usize>, Vec<usize>, Vec<OrderedFloat<f64>>>,
+    sparse_matrix: CsMatBase<OrderedFloat<f64>, usize, Vec<usize>, Vec<usize>, Vec<OrderedFloat<f64>>>,
 }
 
 #[pymethods]
@@ -122,12 +122,75 @@ impl CustomMatrix {
     #[new]
     pub fn new(
         py: Python<'_>,
-        matrix: &PyAny,
+        sparse_matrix: &PyAny,
     ) -> PyResult<CustomMatrix> 
     {
-        let matrix = import_sparse_matrix(py, matrix)?;
-        return Ok(CustomMatrix{ mat: matrix });
+        let matrix = import_sparse_matrix(py, sparse_matrix)?;
+        return Ok(CustomMatrix{ sparse_matrix: matrix });
     }
+
+    pub fn get_umatch(
+        &self
+    ) -> PyResult<PythonIteractableUmatch>
+    {
+        let homology_dimension_max = Some(1);
+
+        let npoints = self.sparse_matrix.rows();
+
+        let dissimilarity_matrix = Arc::new( self.sparse_matrix.clone() );                   
+        let dissimilarity_max = OrderedFloat(   f64::INFINITY );
+        let dissimilarity_min = OrderedFloat( - f64::INFINITY );
+
+        let ring_operator = FieldFloat64::new();
+        // let ring_operator = FieldRationalSize::new();
+
+        let chain_complex_data = 
+        ChainComplexVrFiltered::new(
+            dissimilarity_matrix, 
+            npoints, 
+            dissimilarity_max, 
+            dissimilarity_min, 
+            ring_operator
+        );
+
+        let chain_complex = Arc::new( chain_complex_data );
+        
+
+        let keymaj_vec = chain_complex.cliques_in_order( homology_dimension_max.unwrap_or(1) );
+        // let u = Umatch::factor(
+        //     &self.mat,
+        //     FieldFloat64::new(),
+        //     OrderOperatorAuto,
+        //     OrderOperatorAuto,
+        // );
+
+        let u: Umatch<Arc<ChainComplexVrFiltered<Arc<CsMatBase<OrderedFloat<f64>, usize, Vec<usize>, Vec<usize>, Vec<OrderedFloat<f64>>>>, OrderedFloat<f64>, f64, DivisionRingNative<f64>>>, DivisionRingNative<f64>, OrderOperatorByKeyCutsom<SimplexFiltered<OrderedFloat<f64>>, f64, (SimplexFiltered<OrderedFloat<f64>>, f64), OrderOperatorAuto>, OrderOperatorByKeyCutsom<SimplexFiltered<OrderedFloat<f64>>, f64, (SimplexFiltered<OrderedFloat<f64>>, f64), OrderOperatorAuto>> = Umatch::factor_with_clearing(
+            chain_complex,
+            keymaj_vec.into_iter(),
+            ring_operator,
+            OrderOperatorAuto,
+            OrderOperatorAuto,
+        );
+
+        Ok(PythonIteractableUmatch{ umatch: u })
+    }
+
+    // pub fn a(&self) -> PyResult<Vec<i32>>
+    // {
+    //     return Ok(vec![1, 2, 3]);
+    // }
+}
+
+#[pyclass]
+pub struct PythonIteractableUmatch
+{
+    umatch: Umatch<Arc<ChainComplexVrFiltered<Arc<CsMatBase<OrderedFloat<f64>, usize, Vec<usize>, Vec<usize>, Vec<OrderedFloat<f64>>>>, OrderedFloat<f64>, f64, DivisionRingNative<f64>>>, DivisionRingNative<f64>, OrderOperatorByKeyCutsom<SimplexFiltered<OrderedFloat<f64>>, f64, (SimplexFiltered<OrderedFloat<f64>>, f64), OrderOperatorAuto>, OrderOperatorByKeyCutsom<SimplexFiltered<OrderedFloat<f64>>, f64, (SimplexFiltered<OrderedFloat<f64>>, f64), OrderOperatorAuto>>,
+}
+
+#[pymethods]
+impl PythonIteractableUmatch
+{
+
 }
 
 #[pymethods]
