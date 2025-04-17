@@ -164,8 +164,31 @@ impl CustomMatrix {
         //     OrderOperatorAuto,
         // );
 
-        let u: Umatch<Arc<ChainComplexVrFiltered<Arc<CsMatBase<OrderedFloat<f64>, usize, Vec<usize>, Vec<usize>, Vec<OrderedFloat<f64>>>>, OrderedFloat<f64>, f64, DivisionRingNative<f64>>>, DivisionRingNative<f64>, OrderOperatorByKeyCutsom<SimplexFiltered<OrderedFloat<f64>>, f64, (SimplexFiltered<OrderedFloat<f64>>, f64), OrderOperatorAuto>, OrderOperatorByKeyCutsom<SimplexFiltered<OrderedFloat<f64>>, f64, (SimplexFiltered<OrderedFloat<f64>>, f64), OrderOperatorAuto>> = Umatch::factor_with_clearing(
-            chain_complex,
+        let u
+        // : 
+        // Umatch<
+        // Arc<
+        //     // ChainComplexVrFiltered<
+        //     //     Arc<
+        //             CsMatBase<
+        //                 OrderedFloat<f64>, 
+        //                 usize, 
+        //                 Vec<usize>, 
+        //                 Vec<usize>, 
+        //                 Vec<OrderedFloat<f64>>
+        //             >,
+        //     //     >, 
+        //     //     OrderedFloat<f64>, 
+        //     //     f64, 
+        //     //     DivisionRingNative<f64>
+        //     // >
+        // >, 
+        // DivisionRingNative<f64>, 
+        // OrderOperatorByKeyCutsom<SimplexFiltered<OrderedFloat<f64>>, f64, (SimplexFiltered<OrderedFloat<f64>>, f64), OrderOperatorAuto>, OrderOperatorByKeyCutsom<SimplexFiltered<OrderedFloat<f64>>, f64, (SimplexFiltered<OrderedFloat<f64>>, f64), OrderOperatorAuto>>
+        = 
+        Umatch::factor_with_clearing(
+            // chain_complex,
+            self.sparse_matrix.clone(),
             keymaj_vec.into_iter(),
             ring_operator,
             OrderOperatorAuto,
@@ -184,13 +207,39 @@ impl CustomMatrix {
 #[pyclass]
 pub struct PythonIteractableUmatch
 {
-    umatch: Umatch<Arc<ChainComplexVrFiltered<Arc<CsMatBase<OrderedFloat<f64>, usize, Vec<usize>, Vec<usize>, Vec<OrderedFloat<f64>>>>, OrderedFloat<f64>, f64, DivisionRingNative<f64>>>, DivisionRingNative<f64>, OrderOperatorByKeyCutsom<SimplexFiltered<OrderedFloat<f64>>, f64, (SimplexFiltered<OrderedFloat<f64>>, f64), OrderOperatorAuto>, OrderOperatorByKeyCutsom<SimplexFiltered<OrderedFloat<f64>>, f64, (SimplexFiltered<OrderedFloat<f64>>, f64), OrderOperatorAuto>>,
+    umatch: 
+    Umatch<
+        Arc<
+            // ChainComplexVrFiltered<
+            //     Arc<
+                    CsMatBase<
+                        OrderedFloat<f64>, 
+                        usize, 
+                        Vec<usize>, 
+                        Vec<usize>, 
+                        Vec<OrderedFloat<f64>>
+                    >
+            //     >, 
+            //     OrderedFloat<f64>, 
+            //     f64, 
+            //     DivisionRingNative<f64>
+            // >
+        >, 
+        DivisionRingNative<f64>, 
+        OrderOperatorByKeyCutsom<SimplexFiltered<OrderedFloat<f64>>, f64, (SimplexFiltered<OrderedFloat<f64>>, f64), OrderOperatorAuto>, OrderOperatorByKeyCutsom<SimplexFiltered<OrderedFloat<f64>>, f64, (SimplexFiltered<OrderedFloat<f64>>, f64), OrderOperatorAuto>>,
 }
+
+
+// #[pyclass]
+// pub struct PythonIteractableUmatch
+// {
+//     umatch: Umatch<Arc<ChainComplexVrFiltered<Arc<CsMatBase<OrderedFloat<f64>, usize, Vec<usize>, Vec<usize>, Vec<OrderedFloat<f64>>>>, OrderedFloat<f64>, f64, DivisionRingNative<f64>>>, DivisionRingNative<f64>, OrderOperatorByKeyCutsom<SimplexFiltered<OrderedFloat<f64>>, f64, (SimplexFiltered<OrderedFloat<f64>>, f64), OrderOperatorAuto>, OrderOperatorByKeyCutsom<SimplexFiltered<OrderedFloat<f64>>, f64, (SimplexFiltered<OrderedFloat<f64>>, f64), OrderOperatorAuto>>,
+// }
 
 #[pymethods]
 impl PythonIteractableUmatch
 {
-
+    // fn kernel -> listlist[int]
 }
 
 #[pymethods]
