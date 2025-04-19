@@ -210,7 +210,17 @@ impl PythonIteractableUmatch
     {
         // self.umatch.kernel()
         // for col in self.umatch.
-        for col in self.umatch.kernel(self.indices)
+        // for col in self.umatch.kernel(self.indices)
+        {
+
+        }
+        
+        vec![]
+    }
+
+    fn image(&self) -> Vec<Vec<f64>>
+    {
+        // for col in self.umatch.image(self.indices)
         {
 
         }
