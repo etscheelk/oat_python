@@ -169,6 +169,7 @@ impl CustomMatrix {
 
         let u = 
         Umatch::factor_with_clearing(
+        // Umatch::factor(
             // chain_complex,
             Arc::new(self.sparse_matrix.clone()),
             // keymaj_vec.into_iter(),
@@ -211,19 +212,30 @@ impl PythonIteractableUmatch
         // self.umatch.kernel()
         // for col in self.umatch.
         // for col in self.umatch.kernel(self.indices)
-        {
 
-        }
+        let ret = self.umatch.kernel(self.indices.clone()).map(|col| col.collect_vec()).collect_vec();
+        println!("{:?}", ret);
+
+        // for col in self.umatch.kernel(self.indices.clone())
+        // {
+        //     // println!("kernel: {:?}", col);
+        //     println!("kernel: {:?}", col.collect_vec() );
+        // }
         
         vec![]
     }
 
     fn image(&self) -> Vec<Vec<f64>>
     {
-        // for col in self.umatch.image(self.indices)
-        {
 
-        }
+        let ret = self.umatch.image().map(|col| col.collect_vec()).collect_vec();
+        println!("{:?}", ret);
+
+        // for col in self.umatch.image()
+        // {
+        //     // println!("image: {:?}", col);
+        //     println!("image: {:?}", col.collect_vec() );
+        // }
         
         vec![]
     }
